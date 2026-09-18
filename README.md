@@ -5,7 +5,7 @@ The **Executive Productivity Agent** is a Next.js-powered application designed s
 
 ## 🔗 Working Agent / Clickable Prototype
 The agent is designed to run locally. Once the setup steps are complete, the fully working prototype is accessible at:
-- **Local URL**: `http://localhost:3000`
+- **live at**: `http://localhost:3000`
 *(Note: Requires valid Clerk and Neon Database environment variables to function properly.)*
 
 ## 🏛️ Architecture and Process Flow

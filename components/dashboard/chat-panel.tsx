@@ -11,8 +11,6 @@ import { Layers, Sparkles, ShieldCheck, RefreshCw, Plus } from 'lucide-react';
 
 interface ChatPanelProps {
   sessionToken?: string;
-  connections: React.ReactNode;
-  footer: React.ReactNode;
   anchorDate: string;
   setAnchorDate: (date: string) => void;
   isRefreshing: boolean;
