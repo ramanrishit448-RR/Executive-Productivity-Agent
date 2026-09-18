@@ -12,6 +12,7 @@ import { reconcileCommitments } from './reconcile';
 import { db } from '../db';
 import { users, commitments as commitmentsTable } from '../db/schema';
 import { v4 as uuidv4 } from 'uuid';
+import Groq from 'groq-sdk';
 
 class ReconciledStore {
   private sources: SourceItem[] = [];
@@ -237,8 +238,31 @@ class ReconciledStore {
         answer = `Found ${matched.length} reconciled commitment(s) matching your query:\n\n${itemsStr}`;
         explanation = `Matched query against Neon DB commitment entities.`;
       } else {
-        answer = `I could not find any commitment matching "${query}" in the reconciled commitment store for this week. All information is strictly grounded in verified sources (Transcript, Calendars, 5 Email Threads, Voice Notes).`;
-        explanation = `Zero matches in DB store. The agent refuses to hallucinate facts not present in the data pack.`;
+        if (process.env.GROQ_API_KEY) {
+          try {
+            const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+            const contextData = JSON.stringify(this.sources);
+            
+            const completion = await groq.chat.completions.create({
+              model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+              messages: [
+                { role: 'system', content: `You are an AI assistant. You must answer the user's question based strictly on the following context data (which represents meeting transcripts, emails, and calendars):\n\n${contextData}` },
+                { role: 'user', content: query }
+              ],
+              temperature: 0.2,
+            });
+            
+            answer = completion.choices[0]?.message?.content || `I could not find an answer in the source data.`;
+            explanation = `Dynamic Groq LLM fallback querying raw source data.`;
+          } catch (err) {
+            console.error('Groq fallback error:', err);
+            answer = `I could not find any commitment matching "${query}". Furthermore, the LLM fallback failed.`;
+            explanation = `Failed LLM fallback.`;
+          }
+        } else {
+          answer = `I could not find any commitment matching "${query}" in the reconciled commitment store for this week. All information is strictly grounded in verified sources (Transcript, Calendars, 5 Email Threads, Voice Notes).`;
+          explanation = `Zero matches in DB store. The agent refuses to hallucinate facts not present in the data pack.`;
+        }
       }
     }
 
