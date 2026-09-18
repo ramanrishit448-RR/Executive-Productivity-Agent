@@ -24,7 +24,26 @@ export async function POST(req: NextRequest) {
     }
 
     const { query, anchor_date, sessionId } = validation.data;
-    const result = await reconciledStore.answerQuery(query, anchor_date);
+    
+    let history: { role: string, content: string }[] = [];
+    if (sessionId) {
+      const { db } = await import('@/lib/db');
+      const { chatMessages } = await import('@/lib/db/schema');
+      const { eq, asc } = await import('drizzle-orm');
+      
+      const previousMessages = await db.select()
+        .from(chatMessages)
+        .where(eq(chatMessages.sessionId, sessionId))
+        .orderBy(asc(chatMessages.createdAt))
+        .limit(10);
+        
+      history = previousMessages.map((m: any) => ({
+        role: m.role,
+        content: m.content
+      }));
+    }
+
+    const result = await reconciledStore.answerQuery(query, anchor_date, history);
 
     // Save messages to database
     if (sessionId) {

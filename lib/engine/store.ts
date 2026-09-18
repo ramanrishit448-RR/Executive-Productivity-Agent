@@ -171,7 +171,7 @@ class ReconciledStore {
     };
   }
 
-  public async answerQuery(query: string, anchorDate: string = '2026-09-23'): Promise<QAResult> {
+  public async answerQuery(query: string, anchorDate: string = '2026-09-23', history: { role: string, content: string }[] = []): Promise<QAResult> {
     const list = await this.getCommitments(anchorDate);
     const qLower = query.toLowerCase().trim();
 
@@ -233,7 +233,7 @@ class ReconciledStore {
         c.all_source_ids.some(id => id.toLowerCase().includes(qLower))
       );
 
-      if (matched.length > 0) {
+      if (matched.length > 0 && !history.length) {
         const itemsStr = matched.map(m => `• **${m.topic}**: ${m.final_description} (Owner: ${m.made_by}, Due: ${m.deadline_display})`).join('\n');
         answer = `Found ${matched.length} reconciled commitment(s) matching your query:\n\n${itemsStr}`;
         explanation = `Matched query against Neon DB commitment entities.`;
@@ -244,16 +244,17 @@ class ReconciledStore {
             const contextData = JSON.stringify(this.sources);
             
             const completion = await groq.chat.completions.create({
-              model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+              model: process.env.GROQ_MODEL || 'llama3-70b-8192',
               messages: [
                 { role: 'system', content: `You are an AI assistant. You must answer the user's question based strictly on the following context data (which represents meeting transcripts, emails, and calendars):\n\n${contextData}` },
+                ...history.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
                 { role: 'user', content: query }
               ],
               temperature: 0.2,
             });
             
             answer = completion.choices[0]?.message?.content || `I could not find an answer in the source data.`;
-            explanation = `Dynamic Groq LLM fallback querying raw source data.`;
+            explanation = `Dynamic Groq LLM fallback querying raw source data with conversation history.`;
           } catch (err) {
             console.error('Groq fallback error:', err);
             answer = `I could not find any commitment matching "${query}". Furthermore, the LLM fallback failed.`;
