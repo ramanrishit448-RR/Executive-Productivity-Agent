@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Flat Clean UI Colors */
+    --color-neu-bg: #f9f9fb; /* Soft light gray for the outer canvas */
+    --color-neu-dark: #e5e7eb; /* Subtle border color */
+    --color-neu-light: #ffffff; /* White card color */
+    
+    --color-text-main: #111827; /* Darkest slate */
+    --color-text-muted: #6b7280; /* Gray 500 */
+    
+    --color-accent-dark: #f3f4f6; /* Hover states */
+    --color-accent-light: #ffffff;
+    
+    --color-green-success: #10b981;
+    --color-red-danger: #ef4444;
+
+    /* Clean Shadows */
+    --shadow-neu-flat: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-neu-flat-sm: 0px 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-neu-pressed: inset 0px 1px 2px rgba(0, 0, 0, 0.05);
+    
+    /* Stronger elevation */
+    --shadow-soft-float: 0px 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  body {
+    background-color: var(--color-neu-bg);
+    color: var(--color-text-main);
+  }
+}
+
+@layer utilities {
+  .bg-neu-base {
+    background-color: var(--color-neu-bg);
+  }
+
+  .text-neu-main {
+    color: var(--color-text-main);
+  }
+  
+  .text-neu-muted {
+    color: var(--color-text-muted);
+  }
+
+  /* Utility classes repurposed for Flat UI */
+  .card-neu {
+    background-color: var(--color-neu-light);
+    border-radius: 20px;
+    box-shadow: var(--shadow-neu-flat);
+    border: 1px solid var(--color-neu-dark);
+  }
+
+  .card-neu-pressed {
+    background-color: var(--color-accent-dark);
+    border-radius: 16px;
+    border: 1px solid var(--color-neu-dark);
+  }
+
+  .card-neu-float {
+    background-color: var(--color-neu-light);
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft-float);
+    border: 1px solid rgba(229, 231, 235, 0.5); /* ultra light border */
+  }
+
+  .btn-neu {
+    background-color: var(--color-neu-light);
+    color: var(--color-text-main);
+    border-radius: 12px;
+    box-shadow: var(--shadow-neu-flat-sm);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid var(--color-neu-dark);
+  }
+
+  .btn-neu:hover {
+    background-color: var(--color-accent-dark);
+  }
+
+  .btn-neu:active {
+    background-color: #e5e7eb;
+  }
+
+  .btn-neu-active {
+    background-color: #111827; /* Dark slate */
+    color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .pill-neu {
+    background-color: transparent;
+    color: var(--color-text-muted);
+    border-radius: 9999px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .pill-neu:hover {
+    background-color: var(--color-accent-dark);
+    color: var(--color-text-main);
+  }
+
+  .pill-neu-active {
+    background-color: #111827;
+    color: #ffffff;
+    border-radius: 9999px;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 9999px;
+}
