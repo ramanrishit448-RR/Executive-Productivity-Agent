@@ -5,8 +5,8 @@ The **Executive Productivity Agent** is a Next.js-powered application designed s
 
 ## 🔗 Working Agent / Clickable Prototype
 The agent is designed to run locally. Once the setup steps are complete, the fully working prototype is accessible at:
-- **live at**: `http://localhost:3000`
-*(Note: Requires valid Clerk and Neon Database environment variables to function properly.)*
+- **Live at**: [https://executive-productivity-agent-pi.vercel.app/](https://executive-productivity-agent-pi.vercel.app/)
+
 
 ## 🏛️ Architecture and Process Flow
 The application follows a modern serverless architecture with a deterministic engine prioritizing accuracy over hallucination:
