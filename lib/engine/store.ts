@@ -241,10 +241,12 @@ class ReconciledStore {
         if (process.env.GROQ_API_KEY) {
           try {
             const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-            const contextData = JSON.stringify(this.sources);
+            // Truncate to ~5k tokens (20,000 chars) to stay under Groq's 8k TPM free tier limit
+            const fullContext = JSON.stringify(this.sources);
+            const contextData = fullContext.length > 20000 ? fullContext.substring(0, 20000) + '...[TRUNCATED]' : fullContext;
             
             const completion = await groq.chat.completions.create({
-              model: process.env.GROQ_MODEL || 'llama3-70b-8192',
+              model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
               messages: [
                 { role: 'system', content: `You are an AI assistant. You must answer the user's question based strictly on the following context data (which represents meeting transcripts, emails, and calendars):\n\n${contextData}` },
                 ...history.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),

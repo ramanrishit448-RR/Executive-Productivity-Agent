@@ -35,6 +35,11 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
 
   React.useEffect(() => {
     if (sessionId && user?.id) {
@@ -133,7 +138,7 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
   return (
     <div className="flex flex-col h-full bg-white rounded-2xl w-full max-w-4xl mx-auto shadow-sm border border-gray-100">
       {/* Scrollable Area */}
-      <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col justify-end">
+      <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col">
         {isChatEmpty ? (
           <div className="flex flex-col items-center justify-center flex-1 h-full animate-fade-in">
             <div className="mb-10 flex flex-col items-center">
@@ -264,6 +269,7 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </div>
