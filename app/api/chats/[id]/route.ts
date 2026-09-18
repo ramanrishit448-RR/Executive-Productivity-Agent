@@ -4,7 +4,7 @@ import { chatMessages, chatSessions } from '@/lib/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
 import { auth } from '@clerk/nextjs/server';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const authObj = await auth();
     let userId = authObj?.userId;
@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
-    const sessionId = params.id;
+    const { id: sessionId } = await params;
 
     // Verify session belongs to user
     const [session] = await db

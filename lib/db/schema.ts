@@ -29,7 +29,7 @@ export const briefs = pgTable('briefs', {
 
 export const chatSessions = pgTable('chat_sessions', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => users.id),
+  userId: text('user_id').notNull(),
   title: text('title').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

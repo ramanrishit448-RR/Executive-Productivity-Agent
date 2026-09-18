@@ -284,32 +284,17 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="How can Executive Agent help you today?"
-              className="w-full bg-transparent px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none mb-4"
+              className="w-full bg-transparent px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none mb-2"
             />
             
-            <div className="flex items-center justify-between px-2 pb-1">
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <button type="button" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
-                  <ShieldCheck className="h-4 w-4" />
-                  <span>Deterministic</span>
-                </button>
-                <span>11233/25000</span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <button type="button" className="text-xs text-gray-500 font-medium flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-50">
-                  <Layers className="h-4 w-4" />
-                  <span>Attach content</span>
-                </button>
-                
-                <button
-                  type="submit"
-                  disabled={!input.trim() || isLoading}
-                  className="h-8 w-8 rounded-full bg-black text-white flex items-center justify-center disabled:opacity-30 disabled:bg-gray-200 transition-colors"
-                >
-                  <ArrowUpRight className="h-4 w-4" />
-                </button>
-              </div>
+            <div className="flex items-center justify-end px-2 pb-1">
+              <button
+                type="submit"
+                disabled={!input.trim() || isLoading}
+                className="h-8 w-8 rounded-full bg-black text-white flex items-center justify-center disabled:opacity-30 disabled:bg-gray-200 transition-colors"
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </button>
             </div>
           </form>
         </div>

@@ -110,7 +110,7 @@ export default function ChatPanel({
               <div className="h-6 w-6 rounded-full overflow-hidden shrink-0 bg-gray-200 flex items-center justify-center">
                 <UserButton appearance={{ elements: { avatarBox: "h-full w-full" } }} />
               </div>
-              <div className="text-sm font-medium text-gray-700 truncate">Arjun Malhotra</div>
+              <div className="text-sm font-medium text-gray-700 truncate">{user?.fullName || user?.firstName || 'User'}</div>
             </div>
           </div>
 
@@ -139,7 +139,6 @@ export default function ChatPanel({
                 <Sparkles className="h-4 w-4" />
                 <span>Assistant</span>
               </div>
-              <div className="px-1.5 py-0.5 rounded-md bg-purple-100 text-purple-600 text-[10px] font-bold">PRO</div>
             </button>
             <button
               onClick={() => setActiveTab('stresstest')}
@@ -186,10 +185,6 @@ export default function ChatPanel({
 
         {/* Bottom Actions */}
         <div className="space-y-1">
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
-            <ShieldCheck className="h-4 w-4" />
-            <span>Settings</span>
-          </button>
           <div className="px-4 py-2.5 mt-2">
             <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
               <span>Timeline:</span>
