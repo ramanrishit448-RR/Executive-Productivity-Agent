@@ -3,13 +3,38 @@
 ## 🌟 Overview
 The **Executive Productivity Agent** is a Next.js-powered application designed specifically for C-suite professionals. It serves as a unified workspace that ingests data from disparate sources (meeting transcripts, calendars, email threads, and voice notes) and deterministically extracts and tracks actionable commitments. It provides a grounded, hallucination-free QA Assistant and a Daily Brief dashboard to ensure executives never drop the ball on critical deadlines or unowned tasks.
 
-## 🏛️ System Architecture
-The application follows a modern serverless architecture:
-- **Frontend Layer**: Built with Next.js 15+ App Router and React 19, featuring an interactive and dynamic sidebar layout.
-- **API Layer**: Next.js Serverless Route Handlers manage communication between the client and the database.
-- **Engine Layer**: A custom deterministic data processing engine (`lib/engine/`) that handles data ingestion, candidate extraction, and temporal deadline reconciliation using strict recency-wins logic.
-- **Database Layer**: A serverless PostgreSQL instance hosted on Neon, managed via Drizzle ORM for type-safe database operations.
-- **Authentication**: Secured by Clerk, providing robust user management and dynamic route protection.
+## 🔗 Working Agent / Clickable Prototype
+The agent is designed to run locally. Once the setup steps are complete, the fully working prototype is accessible at:
+- **Local URL**: `http://localhost:3000`
+*(Note: Requires valid Clerk and Neon Database environment variables to function properly.)*
+
+## 🏛️ Architecture and Process Flow
+The application follows a modern serverless architecture with a deterministic engine prioritizing accuracy over hallucination:
+1. **Frontend Layer**: Built with Next.js 15+ App Router and React 19, featuring an interactive sidebar layout and a chat interface.
+2. **API Layer**: Next.js Serverless Route Handlers manage communication between the client and the database.
+3. **Engine Layer**: 
+   - **Ingestion & Normalization**: Transforms meeting transcripts, calendars, emails, and voice notes into uniform `SourceItem` objects.
+   - **Candidate Extraction & Validation**: Extracts explicit commitments using strict deterministic logic.
+   - **Reconciliation & Classification**: Clusters items by topic, resolves conflicting deadlines using a "recency-wins" rule, and strictly classifies ownership (mine, waiting on others, unowned).
+4. **Database Layer**: A serverless PostgreSQL instance hosted on Neon, managed via Drizzle ORM for storing commitments and chat sessions.
+5. **Authentication**: Secured by Clerk, providing robust user management and route protection.
+
+## 🤖 AI Tools & Integrations
+1. **Groq SDK (Llama 3 120B / GPT OSS 120B)**: Used as a fallback LLM. When the user asks a question that does not match a hardcoded deterministic commitment, the agent queries the Groq API. It passes the raw JSON data pack and the user's conversation history to generate a contextual, natural language response.
+2. **Deepmind Antigravity IDE**: AI coding assistant used to rapidly prototype, refactor, and fix UI/UX elements, backend API routes, and database schemas.
+
+## 📥 Inputs, Sources, and Assumptions
+**Inputs & Sources:**
+- **Transcripts**: Board meeting transcripts detailing discussions on Q3 campaigns, leases, etc.
+- **Emails**: Multi-thread emails resolving conflicting deadlines (e.g., vendor lists, expense reports).
+- **Calendars**: Executive scheduling data.
+- **Voice Notes**: Transcribed self-memos.
+All sources are structured in `data/source-pack.json`.
+
+**Assumptions:**
+- **Recency-Wins**: If a deadline is mentioned in a transcript on Monday, but an email on Wednesday proposes a new deadline, the newer source takes absolute precedence.
+- **Strict Ownership**: If a task is explicitly ambiguous or passed between team members without final resolution (like the Mumbai Lease), the system marks it as `unowned`. It will never hallucinate an owner.
+- **Determinism First**: The system assumes LLMs can hallucinate. Therefore, core task extraction and scheduling rely on deterministic TypeScript logic rather than an LLM prompt. The LLM is strictly reserved for conversational fallbacks.
 
 ## 🛠️ Deep-Dive Tech Stack
 - **Framework**: [Next.js](https://nextjs.org/) (App Router, Version 15+)
