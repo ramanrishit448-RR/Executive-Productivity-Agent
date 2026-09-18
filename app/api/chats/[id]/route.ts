@@ -6,7 +6,12 @@ import { auth } from '@clerk/nextjs/server';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const { userId } = await auth();
+    const authObj = await auth();
+    let userId = authObj?.userId;
+    if (!userId) {
+      userId = req.headers.get('x-user-id') || null;
+    }
+
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }

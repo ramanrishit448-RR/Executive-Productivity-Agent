@@ -37,9 +37,13 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
   const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
-    if (sessionId) {
+    if (sessionId && user?.id) {
       // Load messages for this session
-      fetch(`/api/chats/${sessionId}`)
+      fetch(`/api/chats/${sessionId}`, {
+        headers: {
+          'x-user-id': user.id
+        }
+      })
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -54,7 +58,7 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
     } else {
       setMessages([]);
     }
-  }, [sessionId]);
+  }, [sessionId, user?.id]);
 
   const handleSend = async (queryText?: string) => {
     const textToSend = queryText || input;
@@ -78,7 +82,7 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
         const chatRes = await fetch('/api/chats', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: textToSend }),
+          body: JSON.stringify({ title: textToSend, userId: user?.id }),
         });
         const chatJson = await chatRes.json();
         if (chatJson.success) {
@@ -134,7 +138,7 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
           <div className="flex flex-col items-center justify-center flex-1 h-full animate-fade-in">
             <div className="mb-10 flex flex-col items-center">
               <div className="h-20 w-20 rounded-full bg-gradient-to-tr from-blue-300 via-indigo-200 to-purple-200 mb-6 shadow-xl shadow-blue-500/20 blur-[1px]"></div>
-              <h2 className="text-[32px] font-medium text-gray-800 tracking-tight">Good Morning, {firstName}</h2>
+              <h2 className="text-[32px] font-medium text-gray-800 tracking-tight">Hello, {firstName}</h2>
               <h3 className="text-[32px] font-medium text-gray-500 tracking-tight mt-1">
                 How Can I <span className="text-blue-600">Assist You Today?</span>
               </h3>
@@ -162,14 +166,6 @@ export function QAAssistant({ anchorDate, onSelectCommitment, sessionId, onSessi
                 
                 <div className="flex items-center justify-between px-2 pb-1">
                   <div className="flex items-center gap-3">
-                    <button type="button" className="text-[11px] font-medium text-gray-500 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
-                      <HelpCircle className="h-3 w-3" />
-                      <span>Reasoning</span>
-                    </button>
-                    <button type="button" className="text-[11px] font-medium text-gray-500 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
-                      <Layers className="h-3 w-3" />
-                      <span>Deep Research</span>
-                    </button>
                   </div>
                   
                   <button

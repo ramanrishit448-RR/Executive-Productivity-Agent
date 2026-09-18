@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { UserButton } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/nextjs';
 import { DailyBriefQuadrant } from '@/components/DailyBriefQuadrant';
 import { QAAssistant } from '@/components/QAAssistant';
 import { StressTestAudit } from '@/components/StressTestAudit';
@@ -31,9 +31,16 @@ export default function ChatPanel({
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
+  const { user } = useUser();
+
   const fetchSessions = useCallback(async () => {
+    if (!user?.id) return;
     try {
-      const res = await fetch('/api/chats');
+      const res = await fetch('/api/chats', {
+        headers: {
+          'x-user-id': user.id
+        }
+      });
       const json = await res.json();
       if (json.success) {
         setChatSessions(json.data);
@@ -41,7 +48,7 @@ export default function ChatPanel({
     } catch (error) {
       console.error('Failed to fetch sessions:', error);
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     fetchSessions();

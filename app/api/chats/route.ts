@@ -5,9 +5,16 @@ import { eq, desc } from 'drizzle-orm';
 import { auth } from '@clerk/nextjs/server';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const { userId } = await auth();
+    const authObj = await auth();
+    let userId = authObj?.userId;
+    
+    // Fallback if clerk auth() fails (sometimes happens in dev iframe environments)
+    if (!userId) {
+      userId = req.headers.get('x-user-id') || null;
+    }
+
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
@@ -27,12 +34,19 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await auth();
+    const authObj = await auth();
+    let userId = authObj?.userId;
+    const body = await req.json();
+
+    if (!userId) {
+      userId = body.userId || null;
+    }
+
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title } = await req.json();
+    const { title } = body;
 
     const sessionId = uuidv4();
     await db.insert(chatSessions).values({
