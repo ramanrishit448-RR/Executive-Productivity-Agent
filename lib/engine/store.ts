@@ -228,7 +228,8 @@ class ReconciledStore {
         c.topic.toLowerCase().includes(qLower) ||
         c.final_description.toLowerCase().includes(qLower) ||
         c.made_by.toLowerCase().includes(qLower) ||
-        c.made_to.toLowerCase().includes(qLower)
+        c.made_to.toLowerCase().includes(qLower) ||
+        c.all_source_ids.some(id => id.toLowerCase().includes(qLower))
       );
 
       if (matched.length > 0) {
